@@ -14,7 +14,7 @@ const ball = {
     x: Math.random() * canvas.width,
     y: 0,
     radius: 10,
-    speed: 3
+    speed: 8
 };
 
 let score = 0;
