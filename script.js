@@ -17,6 +17,8 @@ const ball = {
     speed: 3
 };
 
+let score = 0;
+
 function drawBasket() {
     ctx.fillStyle = 'blue';
     ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
@@ -28,6 +30,12 @@ function drawBall() {
     ctx.fillStyle = 'red';
     ctx.fill();
     ctx.closePath();
+}
+
+function drawScore() {
+    ctx.font = '20px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText(`Score: ${score}`, 10, 20);
 }
 
 function moveBasket() {
@@ -55,6 +63,7 @@ function moveBall() {
     ) {
         ball.x = Math.random() * canvas.width;
         ball.y = 0;
+        score++;
     }
 }
 
@@ -67,6 +76,7 @@ function update() {
 
     drawBasket();
     drawBall();
+    drawScore();
 
     moveBasket();
     moveBall();
@@ -92,3 +102,4 @@ document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
 
 update();
+
