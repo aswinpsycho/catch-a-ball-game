@@ -18,6 +18,8 @@ const ball = {
 };
 
 let score = 0;
+let missedBalls = 0;
+const maxMissedBalls = 3;
 
 function drawBasket() {
     ctx.fillStyle = 'blue';
@@ -36,6 +38,15 @@ function drawScore() {
     ctx.font = '20px Arial';
     ctx.fillStyle = 'black';
     ctx.fillText(`Score: ${score}`, 10, 20);
+    ctx.fillText(`Missed: ${missedBalls}`, 10, 50);
+}
+
+function drawGameOver() {
+    ctx.font = '40px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText(`Game Over!`, canvas.width / 2 - 120, canvas.height / 2);
+    ctx.font = '20px Arial';
+    ctx.fillText(`Press Enter to Restart`, canvas.width / 2 - 110, canvas.height / 2 + 30);
 }
 
 function moveBasket() {
@@ -52,6 +63,10 @@ function moveBall() {
     ball.y += ball.speed;
 
     if (ball.y + ball.radius > canvas.height) {
+        missedBalls++;
+        if (missedBalls >= maxMissedBalls) {
+            return false;
+        }
         ball.x = Math.random() * canvas.width;
         ball.y = 0;
     }
@@ -65,6 +80,7 @@ function moveBall() {
         ball.y = 0;
         score++;
     }
+    return true;
 }
 
 function clear() {
@@ -72,16 +88,24 @@ function clear() {
 }
 
 function update() {
-    clear();
+    if (missedBalls < maxMissedBalls) {
+        clear();
 
-    drawBasket();
-    drawBall();
-    drawScore();
+        drawBasket();
+        drawBall();
+        drawScore();
 
-    moveBasket();
-    moveBall();
+        moveBasket();
+        if (!moveBall()) {
+            drawGameOver();
+            return;
+        }
 
-    requestAnimationFrame(update);
+        requestAnimationFrame(update);
+    } else {
+        clear();
+        drawGameOver();
+    }
 }
 
 function keyDown(e) {
@@ -95,6 +119,13 @@ function keyDown(e) {
 function keyUp(e) {
     if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         basket.dx = 0;
+    } else if (e.key === 'Enter' && missedBalls >= maxMissedBalls) {
+        // Restart the game
+        score = 0;
+        missedBalls = 0;
+        ball.x = Math.random() * canvas.width;
+        ball.y = 0;
+        update();
     }
 }
 
@@ -102,5 +133,6 @@ document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
 
 update();
+
 
 
